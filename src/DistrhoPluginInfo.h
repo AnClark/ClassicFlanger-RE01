@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DISTRHO_PLUGIN_INFO_H_INCLUDED
+#define DISTRHO_PLUGIN_INFO_H_INCLUDED
 
 #define DISTRHO_PLUGIN_NAME    "Classic Flanger RE-01"
 #define DISTRHO_PLUGIN_URI     "https://github.com/AnClark/ClassicFlanger-RE01"
@@ -28,3 +29,5 @@
 // Global definitions for Classic Reverb plugin (Not DPF-related, only used in our own codebase)
 #define CLASSIC_REVERB_APPDATA_DIR_NAME "ClassicFlangerRE01" // Subdirectory in user appdata folder for storing presets, etc.
 #define CLASSIC_REVERB_PRESET_FILE_NAME "presets.json" // Filename for storing user presets on disk
+
+#endif // DISTRHO_PLUGIN_INFO_H_INCLUDED
