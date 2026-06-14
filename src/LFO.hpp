@@ -1,20 +1,45 @@
-#pragma once
+#ifndef LFO_HPP_INCLUDED
+#define LFO_HPP_INCLUDED
 
 #include <cmath>
 
+/**
+ * @file LFO.hpp
+ * @brief Low-frequency oscillator (LFO) for delay-time modulation.
+ */
+
+/**
+ * @enum LFOWaveForms
+ * @brief Available LFO waveform shapes.
+ */
 enum class LFOWaveForms
 {
-    Sine,
-    Triangle
+    Sine,     ///< Sinusoidal waveform, output range [0, 1].
+    Triangle  ///< Triangular waveform, output range [0, 1].
 };
 
+/**
+ * @struct LFO
+ * @brief Simple low-frequency oscillator.
+ *
+ * Generates a unipolar low-frequency signal in the range [0, 1] using
+ * either a sine or triangle waveform. The phase increments each time
+ * @ref generate() is called, based on the configured rate and sample rate.
+ */
 struct LFO
 {
-    float phase;        /* Current phase 0 ~ 2*PI */
-    float rate;         /* Rate in Hz */
-    float sampleRate;
-    LFOWaveForms waveform;       /* 0=Sine, 1=Triangle */
+    float phase;           ///< Current phase in radians, range [0, 2π).
+    float rate;            ///< Oscillator frequency in Hz.
+    float sampleRate;      ///< Host sample rate in Hz.
+    LFOWaveForms waveform; ///< Selected waveform shape.
 
+    /**
+     * @brief Initializes the LFO to a default state.
+     * @param sampleRate_ Host sample rate in Hz.
+     *
+     * Resets the phase to zero, sets the rate to 1 Hz and selects the
+     * sine waveform.
+     */
     void init(float sampleRate_)
     {
         phase = 0.0f;
@@ -23,6 +48,13 @@ struct LFO
         waveform = LFOWaveForms::Sine;
     }
 
+    /**
+     * @brief Generates the next LFO sample and advances the phase.
+     * @return Unipolar oscillator output in the range [0, 1].
+     *
+     * The output shape depends on @ref waveform. The internal phase is
+     * wrapped to the [0, 2π) range after incrementing.
+     */
     float generate()
     {
         float output;
@@ -53,8 +85,16 @@ struct LFO
         return output;
     }
 
+    /**
+     * @brief Sets the oscillator phase from a degree value.
+     * @param phaseInDegree Phase in degrees.
+     *
+     * The value is converted to radians and stored in @ref phase.
+     */
     inline void setPhase(float phaseInDegree)
     {
         phase = phaseInDegree * (float)(M_PI / 180.0);
     }
 };
+
+#endif // LFO_HPP_INCLUDED
