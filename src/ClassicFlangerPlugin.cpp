@@ -44,6 +44,7 @@ void ClassicFlangerPlugin::initParameter(uint32_t index, Parameter& param)
     switch (index)
     {
         case pParamRate:
+        case pParamDelayMs:
             param.hints |= kParameterIsLogarithmic;
             break;
     }
