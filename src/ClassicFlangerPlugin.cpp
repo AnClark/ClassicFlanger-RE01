@@ -68,8 +68,8 @@ void ClassicFlangerPlugin::setParameterValue(uint32_t index, float value)
             fLfoR.rate = fParams[pParamRate];
             break;
         case pParamWaveform:
-            fLfoL.waveform = fParams[pParamWaveform] > 0.0f ? LFOWaveForms::Triangle : LFOWaveForms::Sine;
-            fLfoR.waveform = fParams[pParamWaveform] > 0.0f ? LFOWaveForms::Triangle : LFOWaveForms::Sine;
+            fLfoL.waveform = fParams[pParamWaveform] >= 0.5f ? LFOWaveForms::Triangle : LFOWaveForms::Sine;
+            fLfoR.waveform = fParams[pParamWaveform] >= 0.5f ? LFOWaveForms::Triangle : LFOWaveForms::Sine;
             break;
         case pParamStereoPhase:
             fLfoR.setPhase(fParams[pParamStereoPhase]);
