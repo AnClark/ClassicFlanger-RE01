@@ -69,6 +69,14 @@ protected:
      */
     void setParameterValue(uint32_t index, float value) override;
 
+    // ── State ──────────────────────────────────────────────────────────────
+
+    /** @brief Initializes a plugin state key. */
+    void initState(uint32_t index, State& state) override;
+
+    /** @brief Called when the host sets a state value. */
+    void setState(const char* key, const char* value) override;
+
     // ── Audio processing ──────────────────────────────────────────────────
 
     /** @brief Called when the plugin is activated (prepares DSP state). */

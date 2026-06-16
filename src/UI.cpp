@@ -1,5 +1,6 @@
 #include "UI.h"
 #include "config.h"
+#include "HardwareButton.hpp"
 
 static constexpr ImGuiKnobs_Mod::KnobScaleMark kDelayTimeMarks[] = {
     {   0.1f, "0.05"   },
@@ -89,6 +90,17 @@ ClassicFlangerUI::ClassicFlangerUI()
     : DISTRHO::UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT, true)
 {
     std::memset(fParams, 0, sizeof(fParams));
+
+    // Initialize preset manager and load persisted user presets from disk
+    fPresetManager = new PresetManager(this);
+    const bool presetsLoaded = fPresetManager->loadUserPresetsFromDisk();
+    if (!presetsLoaded) {
+        // NOTE: _showMessageBox() can be used here because it pushes the message into a queue and doesn't require an active ImGui context at this point.
+        //       The message will be displayed as a popup when the UI is rendered.
+        //       @see _showMessageBox() and _handleMessageBoxIdle() in UI.h/UI.cpp
+        _showMessageBox("WARNING: could not load user presets from disk. Presets will not be saved.");
+    }
+
     _loadFonts();
     fAboutWindowOpened = false;
 }
@@ -97,6 +109,23 @@ void ClassicFlangerUI::parameterChanged(uint32_t index, float value)
 {
     DISTRHO_SAFE_ASSERT_RETURN(index < NUM_PARAMS, )
     fParams[index] = value;
+
+    // Mark preset as modified when user tweaks a knob
+    if (fPresetManager)
+        fPresetManager->markModified();
+}
+
+void ClassicFlangerUI::stateChanged(const char* key, const char* value)
+{
+    // Buffer each restored value; rebuild state after all three arrive.
+    if (std::strcmp(key, STATE_PRESET_TYPE) == 0)
+        fRestoredPresetType = value;
+    else if (std::strcmp(key, STATE_PRESET_NAME) == 0)
+        fRestoredPresetName = value;
+    else if (std::strcmp(key, STATE_PRESET_MODIFIED) == 0)
+        fRestoredModified = (std::strcmp(value, "true") == 0);
+
+    _applyRestoredPresetState();
 }
 
 void ClassicFlangerUI::onImGuiDisplay()
@@ -156,7 +185,7 @@ void ClassicFlangerUI::onImGuiDisplay()
                 _addKnob(pParamRate, " RATE (Hz)", kRateMarks, IM_ARRAYSIZE(kRateMarks), true, false, 0.0f, "%.2f");
 
                 ImGui::SameLine(0.0f, 18.0f);
-                _addBinaryStateSwitch(pParamWaveform, " WAVEFORM", "SINE", "SAW", 10.0f, 8.0f); 
+                _addBinaryStateSwitch(pParamWaveform, " WAVEFORM", "SINE", "SAW", 10.0f, 8.0f);
 
                 ImGui::SameLine(0.0f, 22.0f);
                 _addKnob(pParamDepth, " DEPTH (%)", kDepthMarks, IM_ARRAYSIZE(kDepthMarks), false, false, 0.0f, "%.2f");
@@ -184,19 +213,54 @@ void ClassicFlangerUI::onImGuiDisplay()
                 _EndSection();
             }
 
-            ImGui::SameLine(0.0f, 40.0f);
-
-            
+            ImGui::SameLine(0.0f, 20.0f);
 
             {
                 ImGui::BeginGroup();
 
                 ImGui::Dummy(ImVec2(0, 2));
                 _drawKjearhusLogo(ImVec2(108.0f, 44.0f));
-                ImGui::Dummy(ImVec2(0,28));
 
-                const auto currentPos = ImGui::GetCursorScreenPos();
-                ImGui::SetCursorScreenPos(ImVec2(currentPos.x - 20.0f, currentPos.y));
+                // ── Preset Manager button ──────────────────────────────────
+                {
+                    ImGui::Dummy(ImVec2(0, 2));
+
+                    //ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 20.0f);
+
+                    ImGui::BeginGroup();
+                    ImGui::AlignTextToFramePadding();
+
+                    ImGui::Dummy(ImVec2(2, 0));
+                    ImGui::SameLine(0.0f, 0.0f);
+
+                    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
+
+                    {
+                        const Preset* curPreset = fPresetManager->currentPreset();
+                        std::string   btnLabel;
+                        if (curPreset) {
+                            btnLabel = curPreset->name;
+                            if (fPresetManager->isModified()) btnLabel += " *";
+                        } else {
+                            btnLabel = "Select Preset...";
+                        }
+                        btnLabel += "##Preset";
+
+                        if (ImGuiExt::HardwareButton(btnLabel.c_str(),
+                                           ImVec2(108.0f - 6.0f, ImGui::GetFrameHeight()),
+                                           ImVec4(0x2f / 255.0f, 0x4d / 255.0f, 0x44 / 255.0f, 1.0f)))
+                        {
+                            fPresetManagerOpened = !fPresetManagerOpened;
+                        }
+                    }
+                    ImGui::SameLine(0.0f, 5.0f);
+                    ImGui::Text("PRESET");
+
+                    ImGui::PopFont();
+
+                    ImGui::EndGroup();
+                }
+
                 _drawPluginName();
 
                 ImGui::EndGroup();
@@ -241,7 +305,7 @@ void ClassicFlangerUI::onImGuiDisplay()
                     ImGui::Text("Reverse engineering of Kjaerhus Audio " PLUGIN_NAME_COMMON " (2003).");
                     ImGui::Text("Original algorithm by Kjaerhus Audio.");
                     ImGui::Text("Copyright (c) 2026 AnClark Liu <clarklaw4701@qq.com>");
-                    
+
                     ImGui::SeparatorText("License: GNU General Public License v3.0 or later");
                     ImGui::Dummy(ImVec2(0, 2));
                     ImGui::TextWrapped(DISTRHO_PLUGIN_NAME " is free software: "
@@ -268,7 +332,7 @@ void ClassicFlangerUI::onImGuiDisplay()
 
             {
                 ImGui::BeginGroup();
-                
+
                 ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
                 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0x2f, 0x4d, 0x44, 0xff));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(0x2f + 20, 0x4d + 20, 0x44 + 20, 0xff));
@@ -294,8 +358,22 @@ void ClassicFlangerUI::onImGuiDisplay()
         }
     }
 
+    // Update the OS mouse cursor based on the current ImGui mouse cursor state
     _UpdateMouseCursor();
+
+    // Poll the native file browser dialog (Import/Export). Must be called every frame.
+    _handleFileBrowserIdle();
+
+    // Draw the preset manager overlay (renders nothing when fPresetManagerOpened == false)
+    _drawPresetManager();
+
+    // Handle message box display
+    _handleMessageBoxIdle();
 }
+
+// -----------------------------------------------------------------------
+// Entry point
+// -----------------------------------------------------------------------
 
 START_NAMESPACE_DISTRHO
 

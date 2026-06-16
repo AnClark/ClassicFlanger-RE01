@@ -23,6 +23,10 @@ dpf_add_plugin (${PROJECT_NAME}
         src/UI.cpp
         src/UISubroutines.cpp
         src/UIChassis.cpp
+        src/PresetManager.cpp
+        src/subwindows/FileBrowserStuff.cpp
+        src/subwindows/MessageBoxStuff.cpp
+        src/subwindows/PresetManagerWindow.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
 )
