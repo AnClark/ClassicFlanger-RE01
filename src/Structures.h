@@ -53,7 +53,7 @@ struct ParamInfo
 static const ParamInfo paramInfo[NUM_PARAMS] = {
     /* name,        label,    min,   max,   default, switch */
     { "Rate",       "Hz",     0.05f, 10.0f,  1.2f,    0 },  ///< pParamRate
-    { "Depth",      "%",      0.0f,  1.0f, 0.5f,    0 },  ///< pParamDepth
+    { "Depth",      "",      0.0f,  1.0f, 0.5f,    0 },  ///< pParamDepth
     { "Feedback",   "",      -0.99f, 0.99f, 0.5f,    0 },  ///< pParamFeedback
     { "Delay",      "ms",     0.1f,  10.0f, 4.0f,    0 },  ///< pParamDelayMs
     { "Mix",        "",       0.0f,  1.0f, 0.5f,    0 },  ///< pParamMix
