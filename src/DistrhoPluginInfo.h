@@ -24,7 +24,7 @@
 #define DISTRHO_PLUGIN_UNIQUE_ID       CRF1
 
 // Global definitions for Classic Flanger plugin (Not DPF-related, only used in our own codebase)
-#define CLASSIC_REVERB_APPDATA_DIR_NAME "ClassicFlangerRE01" // Subdirectory in user appdata folder for storing presets, etc.
-#define CLASSIC_REVERB_PRESET_FILE_NAME "presets.json" // Filename for storing user presets on disk
+#define CLASSIC_FLANGER_APPDATA_DIR_NAME "ClassicFlangerRE01" // Subdirectory in user appdata folder for storing presets, etc.
+#define CLASSIC_FLANGER_PRESET_FILE_NAME "presets.json" // Filename for storing user presets on disk
 
 #endif // DISTRHO_PLUGIN_INFO_H_INCLUDED
