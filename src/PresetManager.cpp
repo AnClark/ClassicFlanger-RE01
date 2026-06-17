@@ -26,6 +26,7 @@ namespace fs = std::filesystem;
 // ── Factory presets ────────────────────────────────────────────────────────
 // Name, Rate, Depth, Feedback, DelayMs, Mix, StereoPhase, Waveform, Polarity
 static const Preset kFactoryPresets[] = {
+    {"Elec. Guitar",   1.17f, 0.5f,   0.5f,  1.6f,  0.5f,  90.0f,   0.0f,  0.0f},
     {"Subtle Flange",  0.5f,  0.25f,  0.3f,  5.0f,  0.35f,  90.0f,  0.0f,  0.0f},
     {"Deep Flange",    0.3f,  0.75f,  0.5f,  3.0f,  0.5f,   90.0f,  0.0f,  0.0f},
     {"Jet Flange",     0.15f, 0.9f,   0.75f, 1.5f,  0.6f,   90.0f,  0.0f,  0.0f},
