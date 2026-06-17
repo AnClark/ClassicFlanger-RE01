@@ -112,7 +112,7 @@ void ClassicFlangerUI::_addKnob(Parameters paramId, const char* label, float v_m
         marks, mark_count, &kScaleMarkStyle, pivot_value))
     {
         setParameterValue(paramId, fParams[paramId]);
-        //fPresetManager->markModified();
+        fPresetManager->markModified();
     }
 
     // NOTE: Putting ImGui::IsItemActivated() in ImGuiKnobs_Mod::Knob() will cause IsItemActivated() unavailable.
@@ -189,6 +189,7 @@ void ClassicFlangerUI::_addBinaryStateSwitch(Parameters paramId, const char* lab
         {
             fParams[paramId] = fParams[paramId] >= 0.5f ? 0.0f : 1.0f;
             setParameterValue(paramId, fParams[paramId]);
+            fPresetManager->markModified();
         }
         ImGui::PopFont();
         ImGui::PopID();
