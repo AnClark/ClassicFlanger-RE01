@@ -8,9 +8,7 @@
 #include "../fonts/CormorantFont.hpp"
 #include "../fonts/LiberationSans-Regular.hpp"
 #include "../fonts/FontAwesome5.hpp"
-#if 0
 #include "../fonts/IconFontAwesome5.h"
-#endif
 #include "src/Resources.hpp"
 
 ImGuiKnobs_Mod::KnobScaleMarkStyle kScaleMarkStyle = {
@@ -61,7 +59,6 @@ void ClassicFlangerUI::_loadFonts()
     // ↓ Font #4: Dejavu Sans for ImGui menu and tooltip text (not used in the chassis board, so we can load a full charset)
     io.Fonts->AddFontFromMemoryTTF((void*)dpf_resources::dejavusans_ttf, dpf_resources::dejavusans_ttf_size, 14.5f * getScaleFactor(), &fc);
 
-#if 0   // NOTE: Not implement Preset Manager at present. No need to include Font Awesome.
     // ↓ Font #4 (merged): Font Awesome icons merged into the Dejavu Sans font above.
     //            MergeMode = true causes glyphs to be merged into the previously added font (Font #4 Dejavu Sans)
     //            rather than creating a new font entry. After this call there is still only Font #4 in the atlas,
@@ -70,7 +67,6 @@ void ClassicFlangerUI::_loadFonts()
     fc.MergeMode = true;
     io.Fonts->AddFontFromMemoryCompressedTTF((void*)FontAwesomeTTF_compressed_data, FontAwesomeTTF_compressed_size, 14.5f * getScaleFactor(), &fc, kFontAwesomeRanges);
     fc.MergeMode = false;
-#endif
 
     io.Fonts->Build();
     io.FontDefault = io.Fonts->Fonts[4];
