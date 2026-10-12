@@ -7,6 +7,8 @@ project (ClassicFlanger_RE01
 
 add_subdirectory (dpf)
 
+set (CMAKE_CXX_STANDARD 20)
+
 configure_file (src/config.h.in ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
 option (CONFIG_BUILD_JACK_STANDALONE "Build JACK standalone format (for debugging)")
