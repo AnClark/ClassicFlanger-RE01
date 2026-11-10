@@ -23,6 +23,12 @@ if (CONFIG_BUILD_JACK_STANDALONE)
     set (TARGET_JACK jack)
 endif ()
 
+set (FONT_FILES
+    fonts/LiberationSans-Regular.cpp
+    fonts/CormorantFont.cpp
+    fonts/FontAwesome5.cpp
+)
+
 dpf_add_plugin (${PROJECT_NAME}
     TARGETS vst2 vst3 lv2 clap ${TARGET_JACK}
     FILES_DSP
@@ -38,6 +44,7 @@ dpf_add_plugin (${PROJECT_NAME}
         src/subwindows/PresetManagerWindow.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
+        ${FONT_FILES}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
