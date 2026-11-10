@@ -72,7 +72,7 @@ struct LFO
             case LFOWaveForms::Sine:
             default:
                 /* Sine wave, mapped to 0 ~ 1 range */
-                output = (std::sinf(phase) + 1.0f) * 0.5f;
+                output = (std::sin(phase) + 1.0f) * 0.5f;
                 break;
         }
         
