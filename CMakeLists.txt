@@ -2,8 +2,15 @@ cmake_minimum_required (VERSION 3.20)
 
 project (ClassicFlanger_RE01
     VERSION 1.0.0
+    DESCRIPTION "Classic Flanger RE-01 audio plugin"
     LANGUAGES C CXX
 )
+
+# Metadata for CPack
+set (AUTHOR "AnClark Liu")
+set (INSTALL_DIRECTORY ${PROJECT_NAME})
+set (ICON_PATH "${PROJECT_SOURCE_DIR}/Screenshot.png")
+set (PRODUCTBUILD_IDENTIFIER "com.anclark.classicflanger.re01")
 
 add_subdirectory (dpf)
 
@@ -15,6 +22,12 @@ option (CONFIG_BUILD_JACK_STANDALONE "Build JACK standalone format (for debuggin
 if (CONFIG_BUILD_JACK_STANDALONE)
     set (TARGET_JACK jack)
 endif ()
+
+set (FONT_FILES
+    fonts/LiberationSans-Regular.cpp
+    fonts/CormorantFont.cpp
+    fonts/FontAwesome5.cpp
+)
 
 dpf_add_plugin (${PROJECT_NAME}
     TARGETS vst2 vst3 lv2 clap ${TARGET_JACK}
@@ -31,6 +44,7 @@ dpf_add_plugin (${PROJECT_NAME}
         src/subwindows/PresetManagerWindow.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
+        ${FONT_FILES}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -41,3 +55,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     widgets/imgui-knobs-mod
     widgets/imgui-ext
 )
+
+# Packaging rules
+include ("${PROJECT_SOURCE_DIR}/cmake/Packaging.cmake")
