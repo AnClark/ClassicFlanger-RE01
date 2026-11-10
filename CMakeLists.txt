@@ -2,8 +2,15 @@ cmake_minimum_required (VERSION 3.20)
 
 project (ClassicFlanger_RE01
     VERSION 1.0.0
+    DESCRIPTION "Classic Flanger RE-01 audio plugin"
     LANGUAGES C CXX
 )
+
+# Metadata for CPack
+set (AUTHOR "AnClark Liu")
+set (INSTALL_DIRECTORY ${PROJECT_NAME})
+set (ICON_PATH "${PROJECT_SOURCE_DIR}/Screenshot.png")
+set (PRODUCTBUILD_IDENTIFIER "com.anclark.classicflanger.re01")
 
 add_subdirectory (dpf)
 
@@ -41,3 +48,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     widgets/imgui-knobs-mod
     widgets/imgui-ext
 )
+
+# Packaging rules
+include ("${PROJECT_SOURCE_DIR}/cmake/Packaging.cmake")
