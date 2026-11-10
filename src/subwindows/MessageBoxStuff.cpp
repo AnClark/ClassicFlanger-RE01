@@ -22,13 +22,13 @@ void ClassicFlangerUI::_handleMessageBoxIdle()
 
     if (ImGui::BeginPopupModal("Message", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        ImGui::Dummy(ImVec2(0, 5));
+        ImGui::Dummy(ImVec2(0, SCALE(5)));
         ImGui::Text("%s", fMessageBoxQueue.front().c_str());
-        ImGui::Dummy(ImVec2(0, 10));
+        ImGui::Dummy(ImVec2(0, SCALE(10)));
 
         ImGui::Separator();
 
-        if (ImGui::Button("OK", ImVec2(60, 0)))
+        if (ImGui::Button("OK", ImVec2(SCALE(60), 0)))
         {
             // Apply a mutex to avoid possible conflict
             std::lock_guard<std::mutex> lock(fMessageQueueMutex);
